@@ -3,13 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shimoga CRM | Mini CRM by Hamsa</title>
+<title>Shimoga CRM - Hamsa023</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#0a0a0b;color:#fafafa;min-height:100vh}
-nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #27272a;background:#0a0a0b;position:sticky;top:0}
-.container{padding:30px 5%;max-width:1300px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:20px}
-.card{border:1px solid #27272a;background:#151517;border-radius:12px;padding:20px}
-input,select{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:1px solid #27272a;background:#0a0a0b;color:#fff}
-label{font-size:12px;color:#a1a1aa;margin-top:12px;display:block}
-.btn{padding:12px
+body{background:#0a0a0b;color:#fff;font-family:Arial;min-height:100vh}
+nav{padding:18px 5%;border-bottom:1px solid #333;display:flex;justify-content:space-between}
+.container{padding:25px 5%;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:320px 1fr;gap:20px}
+.card{border:1px solid #333;background:#151517;border-radius:12px;padding:20px}
+input,select{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:1px solid #333;background:#000;color:#fff}
+label{font-size:12px;color:#aaa;margin-top:10px;display:block}
+.btn{width:100%;padding:12px;margin-top:15px;border-radius:8px;border:none;font-weight:700;cursor:pointer;background:#a3ff12;color:#000}
+.lead{border:1px solid #333;background:#151517;border-radius:10px;padding:12px;display:flex;justify-content:space-between;margin-bottom:10px;align-items:center}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.b-new{background:#a3ff12;color:#000}.b-contacted{background:#3b82f6;color:#fff}.b-closed{background:#555;color:#fff}
+@media(max-width:800px){.container{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><b>SHIMOGA CRM</b><small style="color:#aaa">Hamsa023 | FS21763</small></nav>
+<div class="container">
+<div>
+<div class="card">
+<h3>Add New Lead</h3>
+<label>Business Name</label><input id="name" placeholder="Malnad Stores">
+<label>Phone</label><input id="phone" placeholder="9876543210">
+<label>Status</label><select id="status"><option value="new">New</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select>
+<button class="btn" onclick="addLead()">+ Add Lead</button>
+</div>
+<div class="card" style="margin-top:15px"><p style="font-size:12px;color:#aaa">Mini CRM for Shimoga businesses. Data saves in browser.</p></div>
+</div>
+<div>
+<div class="card" style="display:flex;gap:10px;margin-bottom:15px;padding:12px">
+<input id="search" placeholder="Search..." oninput="render()" style="margin:0">
+<select id="filter" onchange="render()" style="margin:0;width:120px"><option value="all">All</option><option value="new">New</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select>
+</div>
+<div id="list"></div>
+</div>
+</div>
+<script>
+let leads=JSON.parse(localStorage.getItem('crm')||'[]');
+function save(){localStorage.setItem('crm',JSON.stringify(leads))}
+function addLead(){let n=document.getElementById('name').value.trim();let p=document.getElementById('phone').value.trim();let s=document.getElementById('status').value;if(!n||!p){alert('Enter name & phone');return}leads.unshift({id:Date.now(),name:n,phone:p,status:s});document.getElementById('name').value='';document.getElementById('phone').value='';save();render()}
+function delLead(id){leads=leads.filter(x=>x.id!=id);save();render()}
+function render(){let q=document.getElementById('search').value.toLowerCase();let f=document.getElementById('filter').value;let fd=leads.filter(l=>(l.name.toLowerCase().includes(q)||l.phone.includes(q))&&(f=='all'||l.status==f));document.getElementById('list').innerHTML=fd.length?fd.map(l=>`<div class="lead"><div><b>${l.name}</b><div style="font-size:12px;color:#aaa">${l.phone}</div></div><div><span class="badge b-${l.status}">${l.status}</span><button onclick="delLead(${l.id})" style="margin-left:8px;background:transparent;border:1px solid #444;color:#fff;padding:5px 10px;border-radius:20px;cursor:pointer">X</button></div></div>`).join(''):'<div class="card" style="text-align:center;color:#666">No leads yet</div>'}
+render();
+</script>
+</body>
+</html>
